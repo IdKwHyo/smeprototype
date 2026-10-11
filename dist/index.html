@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SME Commercial Team — Workflow Prototype</title>
+  <meta name="description" content="Try a simple commercial-team workflow for an independent restaurant: business data, analysis, campaign planning, and results.">
+  <link rel="stylesheet" href="style.css"><script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to workspace</a>
+  <header><div><strong>SME Commercial Team</strong><span class="tag">Workflow prototype</span></div><button id="reset" class="text-button">Reset demo</button></header>
+  <div class="notice">Simulated AI outputs · Editable sample data · Saved only in this browser</div>
+  <nav aria-label="Workflow"><ol id="steps"><li><button data-step="0" aria-current="step">1. Business</button></li><li><button data-step="1" disabled>2. Analysis</button></li><li><button data-step="2" disabled>3. Campaign</button></li><li><button data-step="3" disabled>4. Results</button></li></ol></nav>
+  <main id="workspace">
+    <section id="business-screen" aria-labelledby="business-title">
+      <p class="eyebrow">Your brief</p><h1 id="business-title" tabindex="-1">Start with your business.</h1><p class="intro">Tell your team what you sell, who you serve, and what you want to achieve.</p>
+      <form id="business-form">
+        <div class="fields">
+          <label>Business name<input id="business-name" required maxlength="80" value="Soi Kitchen"></label>
+          <label>Business type<input id="business-type" required maxlength="80" value="Independent Thai restaurant"></label>
+          <label class="wide">Target customers<input id="audience" required maxlength="160" value="Office workers near the restaurant"></label>
+          <label>Brand voice<select id="tone"><option>Warm</option><option>Direct</option><option>Polished</option></select></label>
+          <label>Weekly campaign budget (THB)<input id="budget" type="number" required min="0" max="1000000" step="1" value="600"></label>
+        </div>
+        <label class="goal">Business goal<input id="goal" readonly value="Grow profitable weekday lunch sales"><small>This prototype follows one complete assignment.</small></label>
+        <div class="section-heading"><h2>Menu economics</h2><div class="actions"><button type="button" id="sample-csv" class="secondary">Sample CSV</button><label class="file-button">Import CSV<input id="csv-file" type="file" accept=".csv,text/csv"></label></div></div>
+        <p class="muted">Orders cover the previous 14 days: 10 weekdays and 4 weekend days. Costs and fees are editable assumptions. One item per order.</p>
+        <div class="table-wrap"><table id="menu-table"><caption class="sr-only">Editable menu inputs</caption><thead><tr><th>Menu item</th><th>Weekday orders</th><th>Weekend orders</th><th>Price (THB)</th><th>Ingredients / item</th><th>Packaging / item</th><th>Fee %</th><th>Remove</th></tr></thead><tbody id="menu-inputs"></tbody></table></div>
+        <button type="button" id="add-menu" class="text-button">+ Add menu item</button>
+        <p id="input-status" class="muted" role="status"></p>
+        <p id="business-error" class="error" role="alert" hidden></p>
+        <div class="footer-actions"><span class="muted">Analyst → Strategist → Communications</span><button type="submit">Analyze business →</button></div>
+      </form>
+    </section>
+    <section id="analysis-screen" aria-labelledby="analysis-title" hidden>
+      <p class="eyebrow">Business analyst · Simulated</p><h1 id="analysis-title" tabindex="-1">Understand the opportunity.</h1><p class="intro">The calculations use your inputs. Strategic interpretation is a prototype template.</p>
+      <div id="analysis-content"></div>
+      <div class="footer-actions"><button class="secondary" data-back="0">← Edit business</button><button id="make-plan">Develop campaign →</button></div>
+    </section>
+    <section id="campaign-screen" aria-labelledby="campaign-title" hidden>
+      <p class="eyebrow">Marketing strategist + Communications · Simulated</p><h1 id="campaign-title" tabindex="-1">Turn the finding into a campaign.</h1><p class="intro">Adjust the assumptions, review the economics, and edit the content before approving.</p>
+      <div class="panel"><h2>Weekday lunch campaign</h2><p id="campaign-reason"></p><p class="muted">Audience: <span id="campaign-audience"></span> · Monday–Friday, 11:00–14:00 · One week</p>
+        <div class="fields">
+          <label>Featured menu<select id="campaign-menu"></select></label>
+          <label>Discount (%)<input id="discount" type="number" min="0" max="50" step="1" value="10"></label>
+          <label>Expected additional orders<input id="extra-orders" type="number" min="0" max="1000000" step="1" value="40"></label>
+          <label>Existing orders taking the offer<input id="existing-orders" type="number" min="0" max="1000000" step="1" value="20"></label>
+          <label>Campaign spending (THB)<input id="plan-budget" type="number" min="0" max="1000000" step="1" value="600"></label>
+        </div>
+        <p class="muted">Order volumes are assumptions, not predictions. Existing customers using the discount reduce the campaign's incremental contribution.</p>
+        <p id="plan-error" class="error" role="alert" hidden></p><div id="projection" aria-live="polite"></div>
+      </div>
+      <h2>Campaign deliverables</h2><p class="muted">Editable template drafts. Review facts, dates, availability, and channel details before use.</p>
+      <div class="actions"><button id="regenerate" class="secondary">Generate drafts from current plan</button><button id="download-brief" class="secondary">Download campaign brief</button></div>
+      <label class="draft-label">Social post<textarea id="social-draft" rows="7"></textarea></label>
+      <label class="draft-label">Customer message<textarea id="message-draft" rows="4"></textarea></label>
+      <label class="draft-label">Business announcement / PR draft<textarea id="announcement-draft" rows="4"></textarea></label>
+      <h2>Implementation checklist</h2><div class="checklist"><label><input type="checkbox" id="check-capacity">I can fulfil the expected orders.</label><label><input type="checkbox" id="check-content">I reviewed the offer, content, and campaign dates.</label></div>
+      <p id="draft-status" class="muted" role="status"></p>
+      <div class="footer-actions"><button class="secondary" data-back="1">← Back to analysis</button><button id="approve">Approve plan & review results →</button></div>
+      <p class="muted">Approval saves the plan in this browser. Campaign publishing is manual.</p>
+    </section>
+    <section id="results-screen" aria-labelledby="results-title" hidden>
+      <p class="eyebrow">Business analyst · Follow-up</p><h1 id="results-title" tabindex="-1">Did the campaign pay off?</h1><p class="intro">Enter observed orders and spending, then compare them with an estimated baseline.</p>
+      <p class="approval" id="approval-label"></p>
+      <form id="results-form"><div class="fields">
+        <label>Total orders using the offer<input id="actual-orders" required type="number" min="0" max="1000000" step="1" value="60"></label>
+        <label>Expected orders without the campaign<input id="baseline-orders" required type="number" min="0" max="1000000" step="1" value="20"></label>
+        <label>Actual campaign spending (THB)<input id="actual-spend" required type="number" min="0" max="1000000" step="1" value="600"></label>
+      </div><p class="muted">The baseline is an assumption about orders that would have happened anyway. Other changes in demand can affect the result. This comparison does not establish causality.</p>
+      <div class="actions"><button type="submit">Evaluate results</button><button type="button" class="secondary" id="demo-results">Load sample results</button></div><p id="results-error" class="error" role="alert" hidden></p></form>
+      <div id="results-content" aria-live="polite"></div>
+      <div class="footer-actions"><button class="secondary" data-back="2">← Revise campaign</button><button class="secondary" id="download-results">Download results</button></div>
+    </section>
+    <p class="footnote">Contribution = selling price − platform fee − ingredients − packaging. Figures exclude fixed overhead, taxes, and any additional labour or fulfilment costs. All example business data is synthetic.</p>
+  </main>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body></html>
